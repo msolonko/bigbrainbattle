@@ -1,0 +1,100 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}Game{% endblock %}
+{% block styling %}
+  <style>
+	 .big_text{
+		font-size: calc(1.2vw + 1.2em);
+		font-weight: bold;
+	 }
+	 .small_text{
+		font-size: calc(0.9vw + 1.2em);
+	 }
+	 #modalText{
+	 font-size: calc(0.5vw + 0.8em);
+	 }
+
+  </style>
+{% endblock %}
+
+
+{% block content %}
+	
+	
+<div class = "container text-center">
+	<p class="big_text pt-2">Please solve the following problem:</p>
+	
+<div id="right" class="alert alert-success" role="alert">
+  Success!
+</div>
+<div id="wrong" class="alert alert-danger" role="alert">
+  This is a danger alert—check it out!
+</div>
+	<p id="brain" class = "small_text"></p>
+	<div class="progress">
+  <div id="progress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+</div>
+	<p id="problem" class = "small_text"></p>
+	<input id = "answer" type="number"/>
+	 <button type="button" class="btn btn-primary btn-lg" onclick="submit()">Check</button>
+</div>
+
+</div>
+
+ 
+{% endblock %}
+
+{% block script %}
+<script>
+var RETURNED;
+$("#right").hide();
+$("#wrong").hide();
+	function newinput(){
+	$.ajax({
+            type: 'POST',
+            url: 'getinput',
+            data: {send: "data"}
+          }).
+		  done(function(data) {
+		  RETURNED = data;
+                 console.log(data);
+				 document.getElementById("problem").innerHTML = data["n1"] + " " + data["op"] + " " + data["n2"] + " = ";
+             });
+	}
+	
+	function submit(){
+		var answer = document.getElementById("answer").value;
+		console.log(answer);
+		var s;
+		if (answer == RETURNED["correct"]){
+			$("#right").html("Success! The answer to " + RETURNED["n1"] + " " + RETURNED["op"] + " " + RETURNED["n2"]+ " is: " + RETURNED["correct"]);
+			$("#right").show();
+			$("#wrong").hide();
+			s=1;
+		}
+		else{
+			$("#wrong").html("Incorrect! The answer to " + RETURNED["n1"] + " " + RETURNED["op"] + " " + RETURNED["n2"]+ " is: " + RETURNED["correct"]);
+			$("#wrong").show();
+			$("#right").hide();
+			s=0;
+		}
+		$("#brain").html("Your brain guessed " + RETURNED["guess"]);
+		var percent_error = (Math.abs(parseFloat(RETURNED["guess"])-parseFloat(RETURNED["correct"]))/parseFloat(RETURNED["correct"])*100);
+		if (percent_error > 100){
+			percent_error = 100;
+			}
+		percent_error = 100 - percent_error;
+				console.log(percent_error);
+
+		 $('#progress').css('width', percent_error+'%').attr('aria-valuenow', percent_error);    
+		$.ajax({
+            type: 'POST',
+            url: 'update',
+            data: {status: s}
+          });
+		  
+		  newinput();
+	}
+	
+	newinput();
+</script>
+{% endblock %}

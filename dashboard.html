@@ -1,0 +1,45 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block styling %}
+  <style>
+	 .big_text{
+		font-size: calc(1.2vw + 1.2em);
+		font-weight: bold;
+	 }
+	 .small_text{
+		font-size: calc(0.6vw + 1em);
+	 }
+	 #modalText{
+	 font-size: calc(0.5vw + 0.8em);
+	 }
+  </style>
+{% endblock %}
+
+
+{% block content %}
+<div class = "container text-center">
+	<p class="big_text pt-2">Welcome, {{current_user.fname}} {{current_user.lname}}!</p>
+	<p class="small_text">Please select what operation you want to work on below!</p>
+<br><br>
+	<div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button" class="btn btn-primary btn-lg" onclick="selectMode(0)">Add</button>
+  <button type="button" class="btn btn-primary btn-lg" onclick="selectMode(1)">Subtract</button>
+  <button type="button" class="btn btn-primary btn-lg" onclick="selectMode(2)">Multiply</button>
+  <button type="button" class="btn btn-primary btn-lg" onclick="selectMode(3)">Divide</button>
+</div>
+</div>
+ 
+{% endblock %}
+
+{% block script %}
+<script>
+
+	function selectMode(n){
+		$.ajax({
+            type: 'POST',
+            url: 'dashboard',
+            data: {op: n}
+          });
+	}
+</script>
+{% endblock %}

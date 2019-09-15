@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard_base_style.css') }}">
+    {% block styling %}{% endblock %}
+
+<title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+      <!-- Navbar -->
+  
+    
+    <section class="content">
+    {% block content %}{% endblock %}
+    </section>
+    
+	<script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function() {
+	// get current URL path and assign 'active' class
+	var pathname = window.location.pathname;
+	$('.navbar-nav > li > a[href="'+pathname+'"]').parent().addClass('active');
+	
+	var $_GET = {};
+    if(document.location.toString().indexOf('?') !== -1) {
+        var query = document.location
+                       .toString()
+                       // get the query string
+                       .replace(/^.*?\?/, '')
+                       // and remove any existing hash string (thanks, @vrijdenker)
+                       .replace(/#.*$/, '')
+                       .split('&');
+    
+        for(var i=0, l=query.length; i<l; i++) {
+           var aux = decodeURIComponent(query[i]).split('=');
+           $_GET[aux[0]] = aux[1];
+        }
+    }
+    
+    var tab;
+    if(Object.keys($_GET).indexOf('n') != -1){
+        tab = $_GET['n'];
+    }
+    else{
+        tab = 0;
+    }
+    $(".nav-tabs li").eq(tab).find("a.nav-link").addClass('active')
+    });
+</script>
+{% block script %}{% endblock %}
+ </body>   
+    </html>
